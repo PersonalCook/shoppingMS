@@ -2,6 +2,7 @@ import os
 
 import httpx
 import jwt
+import pytest
 
 from app import crud
 from app.routers import shopping
