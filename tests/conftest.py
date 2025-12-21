@@ -1,9 +1,14 @@
 import os
+import sys
 import tempfile
 from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
+
+_ROOT_DIR = Path(__file__).resolve().parents[1]
+if str(_ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(_ROOT_DIR))
 
 _TMP_DIR = Path(tempfile.mkdtemp(prefix="shoppingms-tests-"))
 
