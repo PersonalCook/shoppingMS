@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopping-service
+  namespace: personalcook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shopping-service
+  template:
+    metadata:
+      labels:
+        app: shopping-service
+    spec:
+      containers:
+        - name: shopping-service
+          image: piasotlar/shopping_service:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: shopping-service-db
+                  key: DATABASE_URL
+
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: jwt-secret
+
+            - name: JWT_ALGORITHM
+              value: HS256
+
+            - name: RECIPE_SERVICE_URL
+              value: http://recipe-service.personalcook.svc.cluster.local:8000
+
+            - name: SOCIAL_SERVICE_URL
+              value: http://social-service.personalcook.svc.cluster.local:8000
+
+          readinessProbe:
+            httpGet:
+              path: /docs
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /docs
+              port: 8000
+            initialDelaySeconds: 20
+            periodSeconds: 10
