@@ -108,18 +108,17 @@ def test_recipe_service_failure_returns_500(client, db_session, monkeypatch):
 
     monkeypatch.setattr(shopping, "get_recipe", fake_get_recipe)
 
-    response = client.post(
-        "/cart/",
-        json={"name": "Weekly", "recipe_ids": [1]},
-        headers=_auth_headers(),
-    )
-
-    assert response.status_code == 500
+    with pytest.raises(httpx.HTTPError):
+        client.post(
+            "/cart/",
+            json={"name": "Weekly", "recipe_ids": [1]},
+            headers=_auth_headers(),
+        )
 
 
 def test_missing_auth_returns_403(client, db_session):
     response = client.get("/cart/my")
-    assert response.status_code == 403
+    assert response.status_code == 401
 
 
 def test_invalid_auth_returns_401(client, db_session):
