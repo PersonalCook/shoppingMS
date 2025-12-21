@@ -22,3 +22,8 @@ app.include_router(shopping.router)
 @app.get("/")
 def root():
     return {"msg": "Shopping Service running in Docker!"}
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
