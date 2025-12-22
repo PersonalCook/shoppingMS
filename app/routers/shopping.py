@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+import httpx
 
 from ..database import SessionLocal
 from .. import schemas
@@ -48,6 +49,9 @@ async def create_cart(
         )
         shopping_carts_created.labels(source="api", status="success").inc()
         return created_cart
+    except httpx.HTTPError:
+        status = "error"
+        raise
     except HTTPException:
         status = "error"
         raise
