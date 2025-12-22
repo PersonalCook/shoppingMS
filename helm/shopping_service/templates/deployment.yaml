@@ -37,11 +37,10 @@ spec:
               value: HS256
 
             - name: RECIPE_SERVICE_URL
-              value: http://recipe-service.personalcook.svc.cluster.local:8000
+              value: http://recipe-service:8000/recipes
 
             - name: SOCIAL_SERVICE_URL
-              value: http://social-service.personalcook.svc.cluster.local:8000
-
+              value: http://social-service:8000
           readinessProbe:
             httpGet:
               path: /health
