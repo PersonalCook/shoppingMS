@@ -7,6 +7,7 @@ from .. import crud
 from ..services.recipe_client import get_recipe
 from ..utils.merge import merge_ingredients
 from ..utils.auth import get_current_user_id
+from ..metrics import shopping_carts_created
 
 
 router = APIRouter(prefix="/cart", tags=["Shopping Cart"])
@@ -29,23 +30,32 @@ async def create_cart(
     recipe_ids = cart.recipe_ids
     #if not recipe_ids:
     #    raise HTTPException(status_code=400, detail="No recipes provided")
+    status = "success"
+    try:
+        ingredients = []
+        for recipe_id in recipe_ids:
+            recipe = await get_recipe(recipe_id)
+            ingredients.extend(recipe["ingredients"])
 
-    ingredients = []
-    for recipe_id in recipe_ids:
-        recipe = await get_recipe(recipe_id)
-        ingredients.extend(recipe["ingredients"])
+        merged_ingredients = merge_ingredients(ingredients)
 
-    merged_ingredients = merge_ingredients(ingredients)
-
-    created_cart = crud.create_shopping_cart(
-        db=db,
-        user_id=user_id,
-        name=cart.name,
-        recipe_ids=recipe_ids,
-        ingredients=merged_ingredients,
-    )
-    return created_cart
-
+        created_cart = crud.create_shopping_cart(
+            db=db,
+            user_id=user_id,
+            name=cart.name,
+            recipe_ids=recipe_ids,
+            ingredients=merged_ingredients,
+        )
+        shopping_carts_created.labels(source="api", status="success").inc()
+        return created_cart
+    except HTTPException:
+        status = "error"
+        raise
+    except Exception as e:
+        status = "error"
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        shopping_carts_created.labels(source="api", status=status).inc()
 
 @router.get("/my", response_model=list[schemas.CartRead])
 def get_my_carts(
