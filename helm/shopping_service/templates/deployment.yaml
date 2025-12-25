@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: shopping-service
-          image: piasotlar/shopping_service:v2
-          imagePullPolicy: IfNotPresent
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
           ports:
             - containerPort: 8000
 
