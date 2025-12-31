@@ -25,3 +25,15 @@ class CartRead(BaseModel):
 class CartUpdate(BaseModel):
     name: Optional[str] = None
     recipe_ids: Optional[List[int]] = None 
+
+
+class ErrorResponse(BaseModel):
+    detail: str
+
+
+class RootResponse(BaseModel):
+    msg: str
+
+
+class HealthResponse(BaseModel):
+    status: str

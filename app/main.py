@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routers import shopping
 from . import models
 from .database import engine
+from .schemas import RootResponse, HealthResponse
 
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from starlette.responses import Response
@@ -52,16 +53,39 @@ async def metrics_middleware(request: Request, call_next):
     finally:
         requests_in_progress.dec()
 
-@app.get("/metrics")
+@app.get(
+    "/metrics",
+    summary="Prometheus metrics",
+    responses={
+        200: {"description": "OK", "content": {"text/plain": {"example": "# HELP ..."}}}
+    },
+)
 def metrics():
     return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
  
 
-@app.get("/")
+@app.get(
+    "/",
+    response_model=RootResponse,
+    summary="Service info",
+    responses={
+        200: {
+            "description": "OK",
+            "content": {"application/json": {"example": {"msg": "Shopping Service running!"}}},
+        }
+    },
+)
 def root():
-    return {"msg": "Shopping Service running in Docker!"}
+    return {"msg": "Shopping Service running!"}
 
 
-@app.get("/health")
+@app.get(
+    "/health",
+    response_model=HealthResponse,
+    summary="Health check",
+    responses={
+        200: {"description": "OK", "content": {"application/json": {"example": {"status": "ok"}}}}
+    },
+)
 def health():
     return {"status": "ok"}
