@@ -1,16 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: shopping-service
-  namespace: personalcook
+  name: {{ include "shopping_service.fullname" . }}
   labels:
-    app: shopping-service
+    {{- include "shopping_service.labels" . | nindent 4 }}
 spec:
+  type: {{ .Values.service.type }}
   selector:
-    app: shopping-service
+    {{- include "shopping_service.selectorLabels" . | nindent 4 }}
   ports:
-    - name: http         
-      port: 8000
-      targetPort: 8000
+    - name: http
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
-  type: ClusterIP

@@ -1,0 +1,60 @@
+replicaCount: 1
+
+image:
+  repository: piasotlar/shopping_service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8000
+  targetPort: 8000
+
+configMap:
+  enabled: true
+  data:
+    CORS_ORIGINS: "http://134.112.128.83"
+    JWT_ALGORITHM: "HS256"
+    RECIPE_SERVICE_URL: "http://recipe-service:8000/recipes"
+    SOCIAL_SERVICE_URL: "http://social-service:8000"
+
+env:
+  - name: DATABASE_URL
+    valueFrom:
+      secretKeyRef:
+        name: shopping-service-db
+        key: DATABASE_URL
+
+  - name: JWT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: app-secrets
+        key: jwt-secret
+
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 10
+  periodSeconds: 10
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 20
+  periodSeconds: 10
+
+resources: {}
+
+podAnnotations: {}
+
+serviceMonitor:
+  enabled: true
+  namespace: monitoring
+  labels:
+    release: monitoring
+  path: /metrics
+  interval: 15s
+  scheme: http
