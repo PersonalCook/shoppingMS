@@ -66,7 +66,7 @@ Steps:
 ## Kubernetes
 
 - Configuration via Helm values, ConfigMaps, and Secrets
-- API exposed through reverse proxy: http://134.112.128.83/api/shopping/
+- API exposed through reverse proxy: http://134.112.152.8/api/shopping/
 
 Separate Helm values files are used:
 - `values-dev.yaml`
@@ -128,9 +128,9 @@ Metrics are scraped using:
 ---
 
 ## API Docs
-- Swagger UI: http://134.112.128.83/api/shopping/docs
-- ReDoc: http://134.112.128.83/api/shopping/redoc
-- OpenAPI JSON: http://134.112.128.83/api/shopping/openapi.json
+- Swagger UI: http://134.112.152.8/api/shopping/docs
+- ReDoc: http://134.112.152.8/api/shopping/redoc
+- OpenAPI JSON: http://134.112.152.8/api/shopping/openapi.json
 
 ---
 

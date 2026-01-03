@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: piasotlar/shopping_service
-  tag: v19
+  tag: v25
   pullPolicy: IfNotPresent
 
 service:
@@ -13,10 +13,10 @@ service:
 configMap:
   enabled: true
   data:
-    CORS_ORIGINS: "http://134.112.128.83"
+    CORS_ORIGINS: "http://134.112.152.8"
     JWT_ALGORITHM: "HS256"
     RECIPE_SERVICE_URL: "http://recipe-service:8000/recipes"
-    SOCIAL_SERVICE_URL: "http://social-service:8000"
+    SOCIAL_SERVICE_URL: "http://social-service-social-service:8000"
 
 env:
   - name: DATABASE_URL
@@ -30,6 +30,8 @@ env:
       secretKeyRef:
         name: app-secrets
         key: jwt-secret
+  - name: ROOT_PATH
+    value: "/api/shopping"
 
 
 readinessProbe:
