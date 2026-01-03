@@ -9,6 +9,8 @@ if not RECIPE_SERVICE_URL:
 async def get_recipe(recipe_id):
     async with httpx.AsyncClient() as client:
         response = await client.get(f"{RECIPE_SERVICE_URL}/{recipe_id}")
+        if response.status_code == 404:
+            return None
         response.raise_for_status()
         return response.json()
 

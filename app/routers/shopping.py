@@ -74,17 +74,23 @@ async def create_cart(
     status = "success"
     try:
         ingredients = []
+        valid_recipe_ids = []
         for recipe_id in recipe_ids:
             recipe = await get_recipe(recipe_id)
+            if recipe is None:
+                continue
+            valid_recipe_ids.append(recipe_id)
             ingredients.extend(recipe["ingredients"])
 
+        if not valid_recipe_ids:
+            raise HTTPException(status_code=400, detail="All recipes were deleted")
         merged_ingredients = merge_ingredients(ingredients)
 
         created_cart = crud.create_shopping_cart(
             db=db,
             user_id=user_id,
             name=cart.name,
-            recipe_ids=recipe_ids,
+            recipe_ids=valid_recipe_ids,
             ingredients=merged_ingredients,
         )
         shopping_carts_created.labels(source="api", status="success").inc()
@@ -194,13 +200,19 @@ async def update_cart(
 
     if updates.recipe_ids is not None:
         ingredients = []
+        valid_recipe_ids = []
         for recipe_id in updates.recipe_ids:
             recipe = await get_recipe(recipe_id)
+            if recipe is None:
+                continue
+            valid_recipe_ids.append(recipe_id)
             for ingredient in recipe["ingredients"]:
                 ingredients.append(ingredient)
 
-        
+        if not valid_recipe_ids:
+            raise HTTPException(status_code=400, detail="All recipes were deleted")
         new_ingredients = merge_ingredients(ingredients)
+        updates.recipe_ids = valid_recipe_ids
 
     updated_cart = crud.update_shopping_cart(
         db=db,
