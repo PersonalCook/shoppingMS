@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: piasotlar/shopping_service
-  tag: latest
+  tag: v19
   pullPolicy: IfNotPresent
 
 service:
