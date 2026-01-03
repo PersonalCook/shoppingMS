@@ -16,7 +16,7 @@ configMap:
     CORS_ORIGINS: "http://localhost:5173"
     JWT_ALGORITHM: "HS256"
     RECIPE_SERVICE_URL: "http://recipe-service:8000/recipes"
-    SOCIAL_SERVICE_URL: "http://social-service:8000"
+    SOCIAL_SERVICE_URL: "http://social-service-social-service:8000"
 
 env:
   - name: DATABASE_URL
@@ -31,6 +31,8 @@ env:
         name: app-secrets
         key: jwt-secret
 
+  - name: ROOT_PATH
+    value: "/api/shopping"
 
 readinessProbe:
   httpGet:
