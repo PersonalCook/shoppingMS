@@ -15,7 +15,6 @@ ShoppingMS generates and stores shopping carts based on selected recipes. It agg
 - **PostgreSQL** for persistence
 - **JWT authentication** for user-scoped carts
 - **Recipe service integration** for ingredient retrieval and recipe metadata
-- **Social service integration** 
 - **Prometheus / Grafana** for metrics and monitoring
 - **EFK stack (Fluent Bit, Elasticsearch, Kibana)** for centralized logging
 
@@ -123,7 +122,6 @@ Metrics are scraped using:
 
 ## Dependencies
 - recipe service at RECIPE_SERVICE_URL (default http://recipe_service:8000/recipes)
-- social service at SOCIAL_SERVICE_URL (default http://social_service:8000)
 
 ---
 
